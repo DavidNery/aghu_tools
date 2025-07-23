@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "AGHUtools",
+  "version": "1.2",
+  "description": "Transforme sua rotina no sistema AGHU com mais agilidade e menos burocracia. AGHUtools é uma extensão que elimina etapas repetitivas com apenas um clique. Porque o tempo do médico deve ser usado para pensar, decidir e cuidar — não para digitar",
+  "permissions": ["scripting", "activeTab", "clipboardWrite"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+"web_accessible_resources": [
+  {
+    "resources": ["resources/prancheta.png"],
+    "matches": ["<all_urls>"]
+  }
+],
+  "content_scripts": [
+    {
+      "matches": ["https://aghu.huab-ufrn.ebserh/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "128": "icon.png"
+  }
+}
