@@ -43,9 +43,9 @@ function extractSinaisVitais(tableDoc) {
 
   const hColumns = head.children[0].children
   for (let i = 2; i < hColumns.length - 2; i++) {
-    const title = hColumns[i].innerText.trim()
+    const title = hColumns[i].innerText.trim().replace(/ pedI?/ig, '')
     if (title === "HGT") hgt.column = i
-    else if (title === "P") pesoCol = i
+    else if (title === "P" || title === 'PESO') pesoCol = i
     else ssvv[title] = { min: 0, max: 0 }
   }
 
@@ -68,7 +68,7 @@ function extractSinaisVitais(tableDoc) {
       }
 
       const valor = parseFloat(cell.innerText.replace(",", "."))
-      const sv = ssvv[hColumns[j].innerText]
+      const sv = ssvv[hColumns[j].innerText.replace(/ pedI?/ig, '')]
       if (!sv) continue
       if (valor !== -1 && (sv.min === 0 || valor < sv.min)) sv.min = valor
       if (valor > sv.max) sv.max = valor
