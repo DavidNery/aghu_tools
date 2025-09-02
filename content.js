@@ -1,18 +1,18 @@
 function extractBalancoHidrico(tableDoc, peso) {
   const tableBH = tableDoc.querySelector("#tabelaVisualizacaoRegistrosBH")
-  if(!tableBH) return null;
+  if (!tableBH) return null;
   const tableValue = tableBH.querySelector('.ui-datatable-frozenlayout-right');
   const tableHead = tableValue.querySelector('#tabelaVisualizacaoRegistrosBH_scrollableThead');
   const tableBody = tableValue.querySelector('#tabelaVisualizacaoRegistrosBH_scrollableTbody');
   const tableFoot = tableValue.querySelector('#tabelaVisualizacaoRegistrosBH_foot').children[0].querySelectorAll('td');
-  
+
   let urinaIndex = 0, evacuacoesIndex = 0, vomitosIndex = 0;
   const urinaAndEvacuacoes = [...tableHead.querySelectorAll('th')].forEach((el, index) => {
-    if(el.innerText === 'Urina') urinaIndex = index;
-    if(el.innerText === 'Evacuou') evacuacoesIndex = index;
-    if(el.innerText === 'Vômitos') vomitosIndex = index;
+    if (el.innerText === 'Urina') urinaIndex = index;
+    if (el.innerText === 'Evacuou') evacuacoesIndex = index;
+    if (el.innerText === 'Vômitos') vomitosIndex = index;
   })
-  
+
   const diurese = parseInt(tableFoot[urinaIndex].innerText);
   const evacuacoes = [...tableBody.querySelectorAll('tr')].reduce((total, current) => {
     return total + (current.children[evacuacoesIndex].innerText === 'Sim' ? 1 : 0);
@@ -20,14 +20,14 @@ function extractBalancoHidrico(tableDoc, peso) {
   let vomitos = [...tableBody.querySelectorAll('tr')].reduce((total, current) => {
     return total + (current.children[vomitosIndex].innerText === 'Sim' ? 1 : 0);
   }, 0)
-  
+
   return `DIURESE: ${diurese} ML - ${(diurese / peso / 24).toFixed(2)} ML/KG/H | EVACUAÇÕES: ${evacuacoes}X | RG: ${vomitos}X`;
 }
 
 function extractSinaisVitais(tableDoc) {
   const svSuffix = {
-    'Tax': 'ºC', 'FC': ' bpm', 'FR': ' irpm', 'PS': ' mmHg', 'PD': ' mmHg',
-    'BCF': ' bpm', 'SO2': '%', 'FiO2': '%', 'P': 'g'
+    'tax': 'ºC', 'fc': ' bpm', 'fr': ' irpm', 'ps': ' mmHg', 'pas': ' mmHg', 'pd': ' mmHg', 'pad': ' mmHg',
+    'bcf': ' bpm', 'so2': '%', 'sat o2': '%', 'fio2': '%', 'p': 'g'
   }
 
   const head = tableDoc.querySelector("#tabelaVisualizacaoRegistrosM_head")
@@ -76,12 +76,12 @@ function extractSinaisVitais(tableDoc) {
   }
 
   let result = Object.entries(ssvv)
-    .filter(([_, {min, max}]) => !isNaN(min) && !isNaN(max))
-    .map(([sv, { min, max }]) => `${sv} ${min}-${max}${svSuffix[sv] || ""}`)
+    .filter(([_, { min, max }]) => !isNaN(min) && !isNaN(max))
+    .map(([sv, { min, max }]) => `${sv} ${min}-${max}${svSuffix[sv.toLowerCase()] || ""}`)
     .join(" / ")
 
   const balancoHidrico = extractBalancoHidrico(tableDoc, parseInt(pesoValor) / 1000.0);
-  if(balancoHidrico) result += '\n' + balancoHidrico + '\n'
+  if (balancoHidrico) result += '\n' + balancoHidrico + '\n'
 
   if (hgt.values.length > 0) {
     result += "\nMAPA GLICÊMICO\n"
@@ -96,7 +96,7 @@ function extractSinaisVitais(tableDoc) {
 
     for (const dataKey in mapa) {
       mapa[dataKey].sort((v1, v2) => v1.hora < v2.hora ? -1 : 1)
-      result += `${dataKey}: ${mapa[dataKey].map(({value, hora}) => `${value} (${hora}h)`).join(", ")}\n`
+      result += `${dataKey}: ${mapa[dataKey].map(({ value, hora }) => `${value} (${hora}h)`).join(", ")}\n`
     }
   }
 
