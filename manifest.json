@@ -16,7 +16,7 @@
 ],
   "content_scripts": [
     {
-      "matches": ["https://aghu.huab-ufrn.ebserh/*","https://10.26.1.230/aghu/*"],
+      "matches": ["https://aghu.*/*","https://*/aghu/*"],
       "js": ["content.js"],
       "run_at": "document_idle"
     }
