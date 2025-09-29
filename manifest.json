@@ -16,7 +16,7 @@
 ],
   "content_scripts": [
     {
-      "matches": ["https://aghu.*/*","https://*/aghu/*"],
+      "matches": ["https://*/aghu/*"],
       "js": ["content.js"],
       "run_at": "document_idle"
     }
