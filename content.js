@@ -43,7 +43,7 @@ function extractSinaisVitais(tableDoc) {
 
   const hColumns = head.children[0].children
   for (let i = 2; i < hColumns.length - 2; i++) {
-    const title = hColumns[i].innerText.trim().replace(/ pedI?/ig, '')
+    const title = hColumns[i].innerText.trim().replace(/ pedI?/ig, '').replaceAll('.', '')
     if (title === "HGT") hgt.column = i
     else if (title === "P" || title === 'PESO') pesoCol = i
     else ssvv[title] = { min: 0, max: 0 }
@@ -68,7 +68,7 @@ function extractSinaisVitais(tableDoc) {
       }
 
       const valor = parseFloat(cell.innerText.replace(",", "."))
-      const sv = ssvv[hColumns[j].innerText.replace(/ pedI?/ig, '')]
+      const sv = ssvv[hColumns[j].innerText.replace(/ pedI?/ig, '').replaceAll('.', '')]
       if (!sv) continue
       if (valor !== -1 && (sv.min === 0 || valor < sv.min)) sv.min = valor
       if (valor > sv.max) sv.max = valor
@@ -124,7 +124,8 @@ function tentarInjetar() {
         const botao = doc.createElement("button")
         botao.id = "btnCopiarSinaisVitais"
         botao.className = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left button-acao bt_cinza'
-
+        botao.type = 'button'
+        
         const iconeUrl = chrome.runtime.getURL("resources/prancheta.png")
         botao.innerHTML = `
           <img class="ui-button-icon-left ui-icon" src="${iconeUrl}">
